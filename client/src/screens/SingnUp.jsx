@@ -1,29 +1,8 @@
 import React from 'react'
 import Register from '../components/Register/Register'
 import Navbar from '../components/Navbar/Navbar'
-import { useNavigate } from 'react-router-dom'
 
 const SignUp = () => {
-  const navigate=useNavigate(null)
-  
-  const handleSuccessfulRegistration = (userToken) => {
-    console.log('Registration Successful:', userToken);
-    
-    // Assume the server returns a token
-    const token = userToken;
-  
-    // Store the token securely
-    document.cookie = `token=${token}; SameSite=Strict; Secure`;
-  
-    // Redirect to the welcome page
-    navigate('/welcome');
-    
-  }
-  
-
-
-
-
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex-grow bg-signup-pattern bg-cover bg-center">
@@ -48,7 +27,6 @@ const SignUp = () => {
                         link:'/login'
                     }
                 }
-                onSubmit={handleSuccessfulRegistration}
             >
             </Register>
         </div>

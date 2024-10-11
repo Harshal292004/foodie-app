@@ -1,6 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-const Navbar = () => {
+
+const Navbar = ({login}) => {
   return (
     <nav className="bg-orange-100 shadow-md">
       <div className="max-w-6xl mx-auto px-4">
@@ -15,6 +16,7 @@ const Navbar = () => {
            
           </div> 
           {/* Secondary Nav */}
+
           <div className="flex items-center space-x-1">
             <NavLink  to="/login" className={()=>{`py-5 px-3`}}>Login</NavLink>
             <NavLink to="/register" className="m-3 py-2 px-3 bg-orange-400 hover:bg-orange-300 text-white hover:text-orange-800 rounded transition duration-300">Signup</NavLink>

@@ -6,32 +6,27 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const SALT_ROUNDS = 14;
 
-
-//middle ware
+// Middleware
 const verifyToken = (req, res, next) => {
-    const token = req.cookies['userToken'];
+    const token = req.headers.authorization?.split(' ')[1];
 
     if (!token) {
         return res.status(403).json({ success: false, message: 'No token provided' });
     }
 
     jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
-        
         if (err) {
             return res.status(401).json({ success: false, message: 'Failed to authenticate token' });
         }
-
-        req.userId = decoded.id;  // Attach the user ID to the request
+        
+        req.userId = decoded.id;
         next();
-    })
-}
-
-
-
+    });
+};
 
 router.post("/createUser", [
     body('email').isEmail(),
-    body('username').isLength({ min: 5 }),  // Changed from userName to username
+    body('username').isLength({ min: 5 }),
     body('password').isLength({ min: 5 }),
     body('fullname').notEmpty(),
     body('contact').notEmpty(),
@@ -42,13 +37,13 @@ router.post("/createUser", [
         return res.status(400).json({ success: false, errors: errors.array() });
     }
 
-    const { username, fullname, email, contact, password, age } = req.body;  // Changed from userName to username
+    const { username, fullname, email, contact, password, age } = req.body;
     try {
         const salt = await bcrypt.genSalt(SALT_ROUNDS);
         const hashedPassword = await bcrypt.hash(password, salt);
         
         const newUser = await userModel.create({
-            username,  // Changed from userName to username
+            username,
             fullname,
             age,
             email,
@@ -57,11 +52,10 @@ router.post("/createUser", [
         });
 
         const token = jwt.sign({ email: email, id: newUser._id }, process.env.JWT_KEY);
-        res.cookie('userToken', token);
-        res.status(201).json({ success: true, userToken: token });
+        res.status(201).json({ success: true, message: "User registered", token });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ success: false, error: err.message });
+        res.status(500).json({ success: false, message: "Error registering user" });
     }
 });
 
@@ -81,20 +75,19 @@ router.post("/loginUser", [
             const isPasswordValid = await bcrypt.compare(password, user.password);
             if (isPasswordValid) {
                 const token = jwt.sign({ email: email, id: user._id }, process.env.JWT_KEY);
-                res.cookie('userToken', token);
-                res.status(200).json({ success: true, user: user });
+                
+                res.status(200).json({ success: true, message: "User logged in successfully!", token });
             } else {
-                res.status(401).json({ success: false, error: "Invalid credentials" });
+                res.status(401).json({ success: false, message: "Invalid credentials" });
             }
         } else {
-            res.status(404).json({ success: false, error: 'User not found' });
+            res.status(404).json({ success: false, message: 'User not found' });
         }
     } catch (err) {
-        res.status(500).json({ success: false, error: err.message ,stack:err.stack});
+        console.error(err);
+        res.status(500).json({ success: false, message: "Error logging in" });
     }
 });
-
-
 
 router.get("/welcome", verifyToken, async (req, res) => {
     try {
@@ -104,12 +97,13 @@ router.get("/welcome", verifyToken, async (req, res) => {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
 
-        // Send customized data based on the user
-        res.status(200).json({ success: true, user: { fullname: user.fullname, email: user.email } });
+        const { password, ...userWithoutPassword } = user.toObject();
+        
+        res.status(200).json({ success: true, user: userWithoutPassword });
     } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
+        console.error(err);
+        res.status(500).json({ success: false, message: "Error fetching user data" });
     }
 });
-
 
 module.exports = router;

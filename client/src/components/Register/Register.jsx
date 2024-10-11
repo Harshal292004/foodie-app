@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-
-const Register = ({ login, register, onSubmit }) => {
+import { NavLink, useNavigate } from 'react-router-dom';
+const Register = ({ login, register}) => {
   const [formData, setFormData] = useState({});
   const [error,setError]=useState(null)
+  const navigate=useNavigate(null)
+
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const isLogin = login && login.isLogin;
   const fields = isLogin ? login.fieldsList : register.fieldsList;
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,9 +20,7 @@ const Register = ({ login, register, onSubmit }) => {
       const url = isLogin
         ? 'http://localhost:5000/users/loginUser'
         : 'http://localhost:5000/users/createUser';
-      
-      console.log('Form data being sent:', formData);
-  
+
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -37,10 +35,11 @@ const Register = ({ login, register, onSubmit }) => {
       }
       
       const json = await response.json();
-      console.log('Server response:', json);
-  
+
       if (json.success) {
-        onSubmit(json.userToken);
+        // Store the token in localStorage
+        localStorage.setItem('userToken', json.token);
+        navigate('/welcome')
       } else {
         setError(json.error || 'An error occurred');
       }

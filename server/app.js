@@ -5,6 +5,9 @@ const port = 5000
 //used to establish connection with data base 
 const db= require('./config/mongoose-connection')
 const cookieParser = require('cookie-parser');
+const expressSession=require('express-session')
+
+
 
 const usersRouter=require('./routes/usersRouter')
 const productRouter= require('./routes/productRouter')
@@ -29,6 +32,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
 
+app.use(
+  expressSession(
+      {
+        //saved uninitialized means ki agar koyi hai jo logged in nahi hai uska session mat handle karo 
+        resave:false,
+        //resave is for dont redo the sessions
+        saveUninitialized:false,
+        secret:process.env.EXPRESS_SESSION_SECRET
+      }
+    )
+)
 
 //routes middle ware 
 app.use('/users',usersRouter)
