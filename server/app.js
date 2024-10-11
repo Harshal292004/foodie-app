@@ -14,17 +14,29 @@ const productRouter= require('./routes/productRouter')
 
 require('dotenv').config()
 
-const allowedOrigins= ['http://localhost:5173','https://localhost:3000']
-app.use((req,res,next)=>{
-  const origin= req.headers.origin
-  if(allowedOrigins.includes(origin)){  
-    res.setHeader("Access-Control-Allow-Origin",origin)
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:5000'];
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
   }
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  )
-  next()
+  
+  // Allow the Authorization header
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
+  // Allow certain methods
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  
+  // Allow credentials
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+
+  next();
 })
 
 app.use(express.json());

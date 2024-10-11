@@ -5,7 +5,7 @@ const FoodBar = ({title, category, foodArray}) => {
   return (
     <div>
         <>
-        <h1 className='text-black font-semibold text-xl p-3'>{category}</h1>
+        <h1 className='text-black font-semibold text-xl'>{category}</h1>
         <div className='border-t border-orange-200 m-3'></div>
         {   
               foodArray.filter((foodItem) => {

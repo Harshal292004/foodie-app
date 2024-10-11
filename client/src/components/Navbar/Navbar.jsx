@@ -1,30 +1,90 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 
-const Navbar = ({login}) => {
+/*
+prop object:
+{
+logo={
+title:,
+to:
+}
+middleOptions=[
+{
+title:,
+to:,
+icon:,
+isLoggedIn,
+isLoggedOut
+}
+]
+}
+*/
+
+
+
+const NavItem = ({ to, className, icon, title }) => (
+  <NavLink 
+  to={to}
+  className={({ isActive }) => 
+    `py-5 px-3 flex items-center space-x-1 ${className} ${isActive ? 'text-orange-500' : 'text-gray-700'}`
+  }
+  >
+    {icon && <span className="text-xl">{icon}</span>}
+    <span>{title}</span>
+  </NavLink>
+);
+
+const Navbar = ({ 
+  logo = { title: "FoodieApp", to: "/" }, 
+  middleOptions = [], 
+  rightOptions = [], 
+  isLoggedIn = false 
+}) => {
+
+  const filteredMiddleOptions = middleOptions.filter(option => 
+    !option.isLoggedIn || isLoggedIn // Show option if it doesn't require login or if logged in
+  );
+
+  const filteredRightOptions = rightOptions.filter(option => 
+    !option.isLoggedOut || !isLoggedIn // Show option if it doesn't require logged-out or if logged out
+  );
+
   return (
     <nav className="bg-orange-100 shadow-md">
       <div className="max-w-6xl mx-auto px-4">
-        <div className="flex justify-between">
-          <div className="flex space-x-4">
-            {/* Logo */}
-            <div>
-              <NavLink to="/" className="flex items-center py-5 px-2 text-gray-700 hover:text-orange-500">
-                <span className="font-bold italic">FoodieApp</span>
-              </NavLink>
-            </div>
-           
-          </div> 
-          {/* Secondary Nav */}
+        <div className="flex justify-between items-center">
+          {/* Logo */}
+          <NavItem 
+            to={logo.to} 
+            title={<span className="font-bold italic">{logo.title}</span>} 
+            className="text-gray-700 hover:text-orange-500" 
+          />
 
-          <div className="flex items-center space-x-1">
-            <NavLink  to="/login" className={()=>{`py-5 px-3`}}>Login</NavLink>
-            <NavLink to="/register" className="m-3 py-2 px-3 bg-orange-400 hover:bg-orange-300 text-white hover:text-orange-800 rounded transition duration-300">Signup</NavLink>
+          {/* Middle Options - Displayed based on isLoggedIn */}
+          <div className="flex space-x-4">
+            {filteredMiddleOptions.map((option, index) => (
+              <NavItem 
+                key={index} 
+                {...option} 
+                className="text-gray-700 hover:text-orange-500" 
+              />
+            ))}
+          </div>
+
+          {/* Right Options - Include both logged-in specific and logged-out specific */}
+          <div className="flex space-x-4">
+            {filteredRightOptions.map((option, index) => (
+              <NavItem 
+                key={index} 
+                {...option} 
+                className="text-gray-700 hover:text-orange-500" 
+              />
+            ))}
           </div>
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
