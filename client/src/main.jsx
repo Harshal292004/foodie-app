@@ -6,7 +6,7 @@ import Home from './screens/Home'
 import Login from './screens/Login'
 import SignUp from './screens/SingnUp'
 import Welcome from './screens/Welcome'
-
+import { CartProvider } from './context/Cart'
 const router= createBrowserRouter(
   createRoutesFromElements(
     <>
@@ -21,6 +21,8 @@ const router= createBrowserRouter(
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router}></RouterProvider>
+    <CartProvider>
+      <RouterProvider router={router}></RouterProvider>
+    </CartProvider>
   </StrictMode>
 )

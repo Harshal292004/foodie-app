@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react'
-
-const FoodCard = ({ imageSrc, title, description, priceOptions, maxQuantity, eggMark }) => {
+import React, { useEffect, useState ,useContext} from 'react'
+import { useDispatchCart,useCart } from '../../context/Cart'
+const FoodCard = ({ id,imageSrc, title, description, priceOptions, maxQuantity, eggMark }) => {
   const [size, setSize] = useState('half')
   const [quantity, setQuantity] = useState(1)
   const [price, setPrice] = useState(priceOptions.half)
   const [totalPrice, setTotalPrice] = useState(priceOptions.half)
-
+  const dispatch = useDispatchCart()
+  const state= useCart()
   useEffect(() => {
     setPrice(size === 'half' ? priceOptions.half : priceOptions.full)
   }, [size, priceOptions])
@@ -20,6 +21,23 @@ const FoodCard = ({ imageSrc, title, description, priceOptions, maxQuantity, egg
 
   const handleQuantityChange = (e) => {
     setQuantity(Number(e.target.value))
+  }
+
+  const handleAddToCart= async () => {
+    const foodItem={ 
+      id,
+      imageSrc, 
+      title, 
+      description, 
+      priceOptions,
+      maxQuantity, 
+      eggMark,
+      size,
+      quantity,
+      price : totalPrice 
+    }
+    await dispatch ({type:"ADD",item: foodItem})
+    console.log(state)
   }
 
   return (
@@ -57,7 +75,7 @@ const FoodCard = ({ imageSrc, title, description, priceOptions, maxQuantity, egg
         </div>
         <div className="flex justify-between items-center">
           <span className="text-orange-500 font-bold text-xl">${totalPrice.toFixed(2)}</span>
-          <button className="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 rounded transition duration-300">
+          <button className="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 rounded transition duration-300" onClick={handleAddToCart}>
             Add To Cart
           </button>
         </div>

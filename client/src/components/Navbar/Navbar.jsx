@@ -13,6 +13,7 @@ middleOptions=[
 title:,
 to:,
 icon:,
+badge:,
 isLoggedIn,
 isLoggedOut
 }
@@ -22,7 +23,7 @@ isLoggedOut
 
 
 
-const NavItem = ({ to, className, icon, title }) => (
+const NavItem = ({ to, className, icon,badge, title }) => (
   <NavLink 
   to={to}
   className={({ isActive }) => 
@@ -31,6 +32,7 @@ const NavItem = ({ to, className, icon, title }) => (
   >
     {icon && <span className="text-xl">{icon}</span>}
     <span>{title}</span>
+    {badge && <span className=''>{badge}</span> }
   </NavLink>
 );
 

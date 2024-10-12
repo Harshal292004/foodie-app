@@ -57,7 +57,7 @@ const Welcome = () => {
         middleOptions={
           [
             {
-              to:"/MyCart", className:"", icon:<FaConciergeBell />, title:"My Cart",isLoggedIn:true
+              to:"/MyCart", className:"", icon:<FaConciergeBell />, title:"My Cart"
             },
             {
               to:"/Menu",className:"",icon:<MdMenuBook/>,title:"Menu"

@@ -12,12 +12,11 @@ const FoodBar = ({title, category, foodArray}) => {
                 return foodItem.CategoryName.trim().replace(/\/$/, '').toLowerCase() === category.trim().toLowerCase();
               })
               .map((food, index) => {
-                {console.log('food:',food)}
-                const {name, image, options, description, eggMark} = food
-                {console.log("Options:",options)}
+                const {_id,name, image, options, description, eggMark} = food
                 return (
                   <FoodCard
                     key={index}
+                    id={_id}
                     imageSrc={image}
                     title={name}
                     description={description}

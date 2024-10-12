@@ -1,9 +1,9 @@
 import Footer from '../components/Footer/Footer'
 import Carousel from "../components/Carousel/Carousel"
 import Navbar from '../components/Navbar/Navbar'
-import { useEffect, useState } from 'react'
-import FoodBar from '../components/FoodBar/FoodBar'
 import { MdMenuBook } from "react-icons/md";
+import Badge from '../components/Badge/Badge'
+import { FaConciergeBell } from "react-icons/fa";
 import FoodCategorySection from '../components/FoodCategorySection/FoodCategorySection'
 function App() {
 
@@ -15,6 +15,9 @@ function App() {
           [
             {
               to:"/Menu",className:"",icon:<MdMenuBook/>,title:"Menu"
+            },
+            {
+              to:"/MyCart", className:"", icon:<FaConciergeBell />,badge:<Badge value={0}/>, title:"My Cart"
             }
           ]
         }
